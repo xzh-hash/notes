@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-ONE
-=======
+main
 two
->>>>>>> two
+three
