@@ -1,0 +1,108 @@
+Spring中的设计模式
+
+1.单例模式
+2.克隆模式
+3.模板模式
+4.观察者模式(监听器 如ApplicationListener)
+5.工厂模式 (BeanFactory)
+6.适配器模式(AOP实现的Adivice 和interceptor)
+7.装饰者模式 (包装模式 Wrapper/Decorator)
+8.代理模式
+9.策略模式(spring实例化用到的strategy模式,XmlBeanDefinitionReader,PropertiesBeanDefinitionReader)
+10.责任链模式(AOP拦截链)
+11.委托者模式(DelegationFilterProxy,整合shiro,SpringSecurity)
+
+
+@Autowired 和 @Resource的区别
+1.@Autowired 是spring提供的注解,按照类型来自动注入.
+ require属性设置为false可以允许null
+ 结合@Qualififier("beanName")按照名字装配
+
+2.@Resource 是由J2EE提供,默认按照ByName自动注入,也可用ByType
+
+--------------------------------------------------------------------------------------------------------------
+
+
+Spring中常用的注解
+1.@ComponentScan 扫描指定目录下带@Component注解的类,启动类上不加自动扫描启动类及其子目录下的所有文件.
+2.@Indexed 需要引入依赖 spring-context-indexer,编译过程中会生成一个META-INF/spring.components文件,优化启动效率(启动时读取这个文件来加载bean,减少了扫描路径创建bean的时间)
+3.@Import可以用来注入bean,用来引入普通类如:
+
+@Import(UserConfig.class)
+@Configuration
+public class UserConfiguration { 
+}
+
+以上可以把UserConfig类注入spring容器. 也可以直接在UserConfig类上加@Component,@Configuration 来实现相同效果.
+在启动类上可以通过@Import(xxxxConfig.class) 这种方式来加载引入的jar包的配置.
+
+
+重要:配合ImportSelector
+Spring的@EnableCache 就是使用了@Import 和 ImportSelector接口
+例:@EnableCache 注解上有@Import(CacheConfigurationSelector.class)
+CacheConfigurationSelector实现了AdviceModeImportSelector,而AdviceModeImportSelector实现了ImportSelector接口.
+selectImports()内部就实现了根据@EnableCaching 中的值来确定AdviceMode
+
+重要:配合ImportBeanDefinitionRegister
+当配置类实现了 ImportBeanDefinitionRegistrar 接口，你就可以自定义往容器中注册想注入的Bean。
+与selectImports接口不同的是,selectImports不能对这个类进行任何操作,ImportBeanDefinitionRegistrar可以自己注入BeanDefinition. 
+通过ImportBeanDefinitionRegistrar接口的registerBeanDefinitions()方法来实现.
+比如Mybatis的@MapperScan 和 Feign @EnableFeignClients 就是通过这种方式实现的
+
+
+--------------------------------------------------------------------------------------------------------------
+
+
+spring中的单例bean和原型bean
+
+单例bean:spring中的bean默认就是单例.通过@Bean @Component @Configuration等注解标注的都是单例bean
+原型bean:每次使用该bean,都是框架去重新创建一个bean,你永远不可能取到想同的对象.通过@@Scope(value = BeanDefinition.SCOPE_PROTOTYPE)可以创建原型bean. 原型bean不受spring容器管理,但还是会被GC回收
+https://www.jianshu.com/p/b894edef2966
+
+---------------------------------------------------------
+
+
+Bean的作用域
+prototype
+singleton(默认)
+request
+session
+global-session
+
+
+
+https://blog.51cto.com/u_15903651/7416599
+-----------------------------------------------------------
+
+
+循环依赖的理解
+
+bean实例化后,bean的初始化赋值有两种方法,构造方法注入和set方法注入
+
+构造方法注入无法解决循环依赖问题,启动时候检查是否有循环依赖,会抛出异常.
+set注入通过三级缓存的方法去解决循环依赖
+
+----------------------------------------------------------------
+
+数据库并发下的三种现象
+1.脏读:当事务A正在访问数据,修改数据时,事务B也在访问数据,事务A读取使用了事务B未提交的数据.
+2.不可重复读:事务A读取了事务B提交的数据.(数据值变更)
+3.幻读:事务A读取了事务B提交的事务.(数据量变更)
+
+不可重复读可以通过行锁解决,幻读要表级锁才可以解决.
+事务的隔离级别
+
+事务的隔离级别
+读未提交 read-uncommitted
+读提交 read committed
+可重复度 repeatable read  (InnoDB默认)
+串行化 Serializable
+
+
+-------------------------------------------------------------------
+
+Spring中的事务
+1.spring事务分为声明式事务管理和编程式事务管理
+声明式通过注解(@Transactional)去实现而编程式通过TransactionTemplate或者PlatformTransactionManager去实现.
+
+

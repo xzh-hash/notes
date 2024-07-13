@@ -1,0 +1,141 @@
+常见的数据结构可分为「线性数据结构」与「非线性数据结构」，具体为：「数组」、「链表」、「栈」、「队列」、「树」、「图」、「散列表」、「堆」。
+线性:数组,链表,栈,队列
+非线性:树,堆,散列表,图
+
+1.数组(使用数组或者ArrayList)
+1.1 使用java数组
+// 初始化一个长度为 5 的数组 array
+int[] array = new int[5];
+// 元素赋值
+array[0] = 2;
+array[1] = 3;
+array[2] = 1;
+array[3] = 0;
+array[4] = 2;
+
+1.2 使用ArrayList
+// 初始化可变数组
+List<Integer> array = new ArrayList<>();
+
+// 向尾部添加元素
+array.add(2);
+array.add(3);
+array.add(1);
+array.add(0);
+array.add(2);
+
+2.链表(使用类构建)
+class ListNode {
+    int val;       // 节点值
+    ListNode next; // 后继节点引用
+    ListNode(int x) { val = x; }
+}
+
+// 实例化节点
+ListNode n1 = new ListNode(4); // 节点 head
+ListNode n2 = new ListNode(5);
+ListNode n3 = new ListNode(1);
+
+// 构建引用指向
+n1.next = n2;
+n2.next = n3;
+
+3.栈(使用Stack或者LinkedList,不推荐Stack)
+3.1 Stack
+Stack<Integer> stack = new Stack<>();
+stack.push(1); // 元素 1 入栈
+stack.push(2); // 元素 2 入栈
+stack.pop();   // 出栈 -> 元素 2
+stack.pop();   // 出栈 -> 元素 1
+
+3.2 LinkedList
+LinkedList<Integer> stack = new LinkedList<>();
+
+stack.addLast(1);   // 元素 1 入栈
+stack.addLast(2);   // 元素 2 入栈
+stack.removeLast(); // 出栈 -> 元素 2
+stack.removeLast(); // 出栈 -> 元素 1
+
+4.队列(使用Queue)
+Queue<Integer> queue = new LinkedList<>();
+queue.offer(1); // 元素 1 入队
+queue.offer(2); // 元素 2 入队
+queue.poll();   // 出队 -> 元素 1
+queue.poll();   // 出队 -> 元素 2
+
+5.树
+class TreeNode {
+    int val;        // 节点值
+    TreeNode left;  // 左子节点
+    TreeNode right; // 右子节点
+    TreeNode(int x) { val = x; }
+}
+
+// 初始化节点
+TreeNode n1 = new TreeNode(3); // 根节点 root
+TreeNode n2 = new TreeNode(4);
+TreeNode n3 = new TreeNode(5);
+TreeNode n4 = new TreeNode(1);
+TreeNode n5 = new TreeNode(2);
+
+// 构建引用指向
+n1.left = n2;
+n1.right = n3;
+n2.left = n4;
+n2.right = n5;
+
+6.图
+6.1邻接矩阵
+int[] vertices = {1, 2, 3, 4, 5};
+int[][] edges = {{0, 1, 1, 1, 1},
+                 {1, 0, 0, 1, 0},
+                 {1, 0, 0, 0, 1},
+                 {1, 1, 0, 0, 1},
+                 {1, 0, 1, 1, 0}};
+6.2邻接表
+int[] vertices = {1, 2, 3, 4, 5};
+List<List<Integer>> edges = new ArrayList<>();
+
+//里面的数字表示下标,
+如edge1表示 vertices[0] 与 vertices[1],vertices[2]
+,vertices[3],vertices[4] 间有边
+List<Integer> edge_1 = new ArrayList<>(Arrays.asList(1, 2, 3, 4));
+List<Integer> edge_2 = new ArrayList<>(Arrays.asList(0, 3));
+List<Integer> edge_3 = new ArrayList<>(Arrays.asList(0, 4));
+List<Integer> edge_4 = new ArrayList<>(Arrays.asList(0, 1, 4));
+List<Integer> edge_5 = new ArrayList<>(Arrays.asList(0, 2, 3));
+edges.add(edge_1);
+edges.add(edge_2);
+edges.add(edge_3);
+edges.add(edge_4);
+edges.add(edge_5);
+
+7.散列表
+散列表是一种非线性数据结构，通过利用 Hash 函数将指定的「键 key」映射至对应的「值 value」，以实现高效的元素查找。
+
+8.堆
+堆是一种基于「完全二叉树」的数据结构，可使用数组实现。以堆为原理的排序算法称为「堆排序」，基于堆实现的数据结构为「优先队列」。堆分为「大顶堆」和「小顶堆」，大（小）顶堆：任意节点的值不大于（小于）其父节点的值。
+
+// 初始化小顶堆
+Queue<Integer> heap = new PriorityQueue<>();
+
+// 元素入堆
+heap.add(1);
+heap.add(4);
+heap.add(2);
+heap.add(6);
+heap.add(8);
+
+// 元素出堆（从小到大）
+heap.poll(); // -> 1
+heap.poll(); // -> 2
+heap.poll(); // -> 4
+heap.poll(); // -> 6
+heap.poll(); // -> 8
+
+9.深度优先算法
+9.1 使用递归
+9.2 使用栈
+
+10.广度优先算法
+10.1 使用队列
