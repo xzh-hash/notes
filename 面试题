@@ -103,6 +103,62 @@ set注入通过三级缓存的方法去解决循环依赖
 
 Spring中的事务
 1.spring事务分为声明式事务管理和编程式事务管理
-声明式通过注解(@Transactional)去实现而编程式通过TransactionTemplate或者PlatformTransactionManager去实现.
+声明式通过注解(@Transactional)
+
+去实现编程式通过TransactionTemplate或者PlatformTransactionManager去实现.
+
+
+------------------------------------------------------------------
+
+线程的状态
+CPU
+1.新建状态（new）
+2.就绪状态（ready）
+3.运行状态（running）
+4.等待状态（waiting）  wait(),sleep(),join() 方法执行进入
+5.结束状态（terminated）
+
+JAVA
+@see java.lang.Thread   state
+1.NEW 新建
+2.RUNNABLE 可执行的，包括运行与非运行状态
+3.BLOCKED 没拿到syn 锁时，处于blocked
+4.WAITING 被wait(),join(),park() 没有时间限制挂起时，处于waiting状态，需要唤醒
+5.TIMED_WAITING 有时间限制的等待，sleep(),wait(),join(),parkNanos(),parkUnitil()
+6.TERMINATED 结束
+
+------------------------------------------------------------------------
+
+如何停止线程
+1. stop() 不推荐，已过时
+2.使用共享变量
+3.interrupt  线程有一个interrupt标记位，默认为false，执行interrupt后，变为false，线程会停止
+
+------------------------------------------------------------------------
+
+sleep和wait
+
+1.sleep()属于Thread类中的static方法 ， wait() 属于Object类方法
+2.sleep使线程进入TIMED_WAITING,自动唤醒。 wait方法执行后线程进入WAITING状态，需手动唤醒。
+3.sleep在持有锁时执行，不会释放锁资源。wait在执行后，会释放锁资源。
+4.sleep在有锁或无锁时皆可执行，wait必须在有锁时执行。
+
+wait方法会将持有锁的线程从owner扔到WaitSet集合中，这个操作是在修改ObjectMonitor对象，如果没有持有syn锁的话，无法操作ObjectMonitor对象。
+
+
+------------------------------------------------------------------------
+
+并发编程的三大特性
+原子，可见，有序
+
+1.如何保障原子性
+1.1 synchronized
+
+1.2 CAS
+	comparer and swap 乐观锁，Unsafe类提供了对CAS的操作方法，详见原子类AtomicInteger等。
+1.3 Lock锁
+	ReentrantLock 基于CAS 和AQS
+
+1.4 ThradLocal 
 
 
