@@ -162,3 +162,48 @@ wait方法会将持有锁的线程从owner扔到WaitSet集合中，这个操作�
 1.4 ThradLocal 
 
 
+--------------------------------------------------------------------------
+
+关于BIO,NIO,AIO
+
+BIO
+传统的io模型,在读写数据的时候会发生阻塞现象.当用户线程发出请求之后,内核回去查看数据是否就绪,如果没有就绪就会等待数据就绪,而用户线程就处于阻塞状态,用户线程交出CPU. 当数据就绪后,内核会将数据拷贝到用户线程,并返回给用户,这时才会接触block状态.典型阻塞IO(BIO):data = socket.read()
+
+
+非阻塞io,用户线程发起read()后,无需等待,马上得到结果.如果结果是error时,他可以再次发起read操作.一旦内核准备好数据,就会马上拷贝到用户线程. NIO 会不断的询问内核是否准备就绪,也就是说NIO不会交出CPU,会一直占用CPU.如下:
+while(true){
+	data = socket.read();//事实上read也是阻塞的,这边仅作参考
+	if(data!= error){
+		//处理数据
+		break;
+	}
+}
+
+
+NIO(多路复用IO)
+java 的nio是多路复用io. 在nio中,会有一个线程不断去轮询多个socket状态,只有当socket有真正读写事件时才会进行读写操作.
+相比上面的while方式,nio只需要一个线程,即可管理多个socket,大大减少了CPU资源. 在java NIO中,使用selector.select()去查询每个通道是否有到达事件.
+NIO比非阻塞IO效率高是因为NIO在内核中的轮询比用户线程去轮询效率高很多.
+
+详见JAVA ServerSocketChannel   channel /selector
+
+AIO(异步IO)
+BIO和NIO都是同步IO,AIO是异步IO(JAVA详见AsynchronousServerSocketChannel)
+异步IO需要操作系统支持,windows的IOCP技术支持异步IO,Linux则通过epoll模拟支持异步IO
+同步IO是轮询方式,异步IO是订阅-通知方式.
+
+
+生产中一般使用NIO框架Netty()
+Netty是一个高性能、异步事件驱动的NIO框架，提供了对TCP、UDP和文件传输的支持。作为当前最流行的NIO框架，Netty在互联网领域、大数据分布式计算领域、游戏行业、通信行业等获得了广泛的应用，一些业界著名的开源组件也基于Netty构建，比如RPC框架、zookeeper等。
+
+
+
+
+
+
+
+
+
+
+
+
